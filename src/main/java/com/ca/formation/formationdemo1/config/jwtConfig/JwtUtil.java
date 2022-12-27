@@ -19,7 +19,8 @@ public class JwtUtil {
 
     public String generateAccesToken(Utilisateur utilisateur){
         Claims claims = Jwts.claims().setSubject(utilisateur.getUsername());
-        claims.put("scopes", utilisateur.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
+        claims.put("scopes", utilisateur.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList()));
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(utilisateur.getName()+","+utilisateur.getUsername())
