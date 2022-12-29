@@ -72,15 +72,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and();
 
         // mettre pas autoriser si on a une exception
-        http = http
-                .exceptionHandling()
-                        .authenticationEntryPoint(
-                                ((request, response, authException) -> {
-                                    System.err.println("Demande pas autoriser - "+authException.getMessage());
-                                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
-                                })
-                        )
-                                .and();
+        http = http.exceptionHandling().authenticationEntryPoint(((request, response, authException) -> {
+            System.err.println("Demande pas autoriser - "+authException.getMessage());
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());})).and();
 
         // mettre les permissions sur nos resources
         http.authorizeHttpRequests()

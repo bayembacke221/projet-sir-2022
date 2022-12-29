@@ -100,6 +100,10 @@
             <artifactId>sonar-maven-plugin</artifactId>
             <version>3.7.0.1746</version>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
 
     </dependencies>
     <!-- Profile added(after </dependencies>... ) -->

@@ -23,12 +23,12 @@ public class PersonneController {
     }
 
     @GetMapping("/nouveau")
-    public String nouveauPersonne(){
+    public String nouveauPersonne(Personne personne){
         return "nouveau";
     }
 
     @PostMapping("/ajouterPersonne")
-    public String ajouterPersonne(Personne personne){
+    public String ajouterPersonne(Personne personne, Model model){
         repository.save(personne);
         return "redirect:/";
 
