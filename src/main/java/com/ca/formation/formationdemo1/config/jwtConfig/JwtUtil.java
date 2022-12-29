@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class JwtUtil {
 
     // mettre le jwtSecret= "Base-64"
-    private final String jwtSecret="TWV0dHJlIG1vbiB0b2tlbiBlbiBiYXNlIDY0IA==";
+    private final static String jwtSecret="TWV0dHJlIG1vbiB0b2tlbiBlbiBiYXNlIDY0IA==";
 
     // generer JWT
 
@@ -69,15 +69,15 @@ public class JwtUtil {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
             return true;
         } catch (SignatureException ex){
-            System.out.println("Invalide Signature Jwt - "+ex.getMessage());
+            System.err.println("Invalide Signature Jwt - "+ex.getMessage());
         } catch (ExpiredJwtException ex){
-            System.out.println("Expiration du Jwt - "+ex.getMessage());
+            System.err.println("Expiration du Jwt - "+ex.getMessage());
         }catch (UnsupportedJwtException ex){
-            System.out.println("Token jwt non supporté - "+ex.getMessage());
+            System.err.println("Token jwt non supporté - "+ex.getMessage());
         }catch (IllegalArgumentException ex){
-            System.out.println("Invalide claims Jwt - "+ex.getMessage());
+            System.err.println("Invalide claims Jwt - "+ex.getMessage());
         }catch (MalformedJwtException ex){
-            System.out.println("Token jwt mal formatter - "+ex.getMessage());
+            System.err.println("Token jwt mal formatter - "+ex.getMessage());
         }
 
         return false;
