@@ -38,6 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private String apiDocPath;
     @Value("${springdoc.swagger-ui.path}")
     private String swaggerPath;
+    @Value("${security.enable-csrf}")
+    private boolean csrfEnabled;
 
     public SecurityConfig(UtilisateurRepository utilisateurRepository, JwtFilter jwtFilter) {
 
@@ -56,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         () -> new UsernameNotFoundException(
                                 format("utilisateur: %s,  pas trouvé", username)
                         )
-                ));
+                )).passwordEncoder(passwordEncoder());
     }
 
     @Override

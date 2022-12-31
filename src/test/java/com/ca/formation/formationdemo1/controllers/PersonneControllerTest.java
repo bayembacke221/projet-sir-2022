@@ -60,6 +60,7 @@ public class PersonneControllerTest {
     ResponseEntity<String> response = this.restTemplate.exchange("http://localhost:" + port + "/api/v2/personnes/hello",
             HttpMethod.GET, entity, String.class);
     assertNotNull(response);
+    //assertEquals( response.getBody(),"Bye Bye");
 
 
   }
@@ -112,7 +113,7 @@ public class PersonneControllerTest {
             entity, Personne.class);
 
     assertNotNull(responseEntity);
-    // assertEquals(personne.getNom(), "Abdel");
+     //assertEquals(personne.getNom(), "Abdel");
 
   }
 

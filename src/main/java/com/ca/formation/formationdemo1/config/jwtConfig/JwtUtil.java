@@ -7,13 +7,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import org.springframework.beans.factory.annotation.Value;
 import java.util.stream.Collectors;
 
 @Component
 public class JwtUtil {
 
     // mettre le jwtSecret= "Base-64"
-    private final static String jwtSecret="TWV0dHJlIG1vbiB0b2tlbiBlbiBiYXNlIDY0IA==";
+    @Value("${bayembacke.app.jwtSecret}")
+    private  String jwtSecret;
 
     // generer JWT
 
