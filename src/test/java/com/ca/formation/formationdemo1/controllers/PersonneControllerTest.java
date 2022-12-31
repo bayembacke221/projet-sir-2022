@@ -1,6 +1,8 @@
 package com.ca.formation.formationdemo1.controllers;
 
 import com.ca.formation.formationdemo1.models.Personne;
+import com.ca.formation.formationdemo1.models.Role;
+import com.ca.formation.formationdemo1.models.Utilisateur;
 import com.ca.formation.formationdemo1.services.PersonneService;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +21,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.Set;
 
 import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -45,7 +49,6 @@ public class PersonneControllerTest {
   }
 
   private String tokenRequest;
-
   @Test
   @WithMockUser(username = "michel@formation.sn", password = "Passer@123", authorities = { "READ" })
   public void helloTest() {
@@ -54,19 +57,21 @@ public class PersonneControllerTest {
     headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + tokenRequest);
     HttpEntity<String> entity = new HttpEntity<String>(null, headers);
 
-    ResponseEntity<String> response = this.restTemplate.exchange("http://localhost:" + port + "/api/v2/personnes/bye",
-        HttpMethod.GET, entity, String.class);
+    ResponseEntity<String> response = this.restTemplate.exchange("http://localhost:" + port + "/api/v2/personnes/hello",
+            HttpMethod.GET, entity, String.class);
+    assertNotNull(response);
 
-    //assertEquals(response.getBody(), "Bye bye");
+
   }
+
 
   @Test
   @WithMockUser(username = "michel@formation.sn", password = "Passer@123", authorities = { "READ" })
   public void getPersonnes() throws Exception {
     RequestBuilder requestBuilder = MockMvcRequestBuilders
-        .get("/api/v2/personnes")
-        .header(HttpHeaders.AUTHORIZATION, "Bearer token")
-        .contentType(MediaType.APPLICATION_JSON);
+            .get("/api/v2/personnes")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer token")
+            .contentType(MediaType.APPLICATION_JSON);
     MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
     MockHttpServletResponse response = mvcResult.getResponse();
     assertEquals(HttpStatus.OK.value(), response.getStatus());
@@ -75,9 +80,9 @@ public class PersonneControllerTest {
   @Test
   public void getPersonnesPasAutoriser() throws Exception {
     RequestBuilder requestBuilder = MockMvcRequestBuilders
-        .get("/api/v2/personnes")
-        .header(HttpHeaders.AUTHORIZATION, "Bearer token")
-        .contentType(MediaType.APPLICATION_JSON);
+            .get("/api/v2/personnes")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer token")
+            .contentType(MediaType.APPLICATION_JSON);
 
     mockMvc.perform(requestBuilder).andExpect(status().isUnauthorized());
 
@@ -91,7 +96,7 @@ public class PersonneControllerTest {
     HttpEntity<String> entity = new HttpEntity<String>(null, headers);
 
     ResponseEntity<String> response = restTemplate.exchange("http://localhost:" + port + "/api/v2/personnes",
-        HttpMethod.GET, entity, String.class);
+            HttpMethod.GET, entity, String.class);
 
     assertNotNull(response);
 
@@ -104,7 +109,7 @@ public class PersonneControllerTest {
     HttpEntity<String> entity = new HttpEntity<String>(null, headers);
 
     ResponseEntity<Personne> responseEntity = restTemplate.exchange(getRootUrl() + "/personnes/3", HttpMethod.GET,
-        entity, Personne.class);
+            entity, Personne.class);
 
     assertNotNull(responseEntity);
     // assertEquals(personne.getNom(), "Abdel");
@@ -118,7 +123,7 @@ public class PersonneControllerTest {
     headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + tokenRequest);
     HttpEntity<Personne> entity = new HttpEntity<Personne>(null, headers);
     ResponseEntity<Personne> responseEntity = restTemplate
-        .exchange(getRootUrl() + "/personnes", HttpMethod.POST, entity, Personne.class, personne);
+            .exchange(getRootUrl() + "/personnes", HttpMethod.POST, entity, Personne.class, personne);
     assertNotNull(responseEntity);
   }
 
@@ -126,9 +131,9 @@ public class PersonneControllerTest {
   @WithMockUser(username = "michel@formation.sn", password = "Passer@123", authorities = { "READ" })
   public void getPersonne() throws Exception {
     RequestBuilder requestBuilder = MockMvcRequestBuilders
-        .get("/api/v2/personnes/2")
-        .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenRequest)
-        .contentType(MediaType.APPLICATION_JSON);
+            .get("/api/v2/personnes/2")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenRequest)
+            .contentType(MediaType.APPLICATION_JSON);
 
     MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
     String contentAsString = mvcResult.getResponse().getContentAsString();
@@ -141,16 +146,107 @@ public class PersonneControllerTest {
   @Before
   public void login() throws Exception {
     String body = "{\n" +
-        "    \"username\": \"clara@formation.ca\",\n" +
-        "    \"password\": \"Passer@123\"\n" +
-        "}";
+            "    \"username\": \"clara@formation.ca\",\n" +
+            "    \"password\": \"Passer@123\"\n" +
+            "}";
     RequestBuilder requestBuilder = MockMvcRequestBuilders
-        .post("/api/v2/auth/login")
-        .content(body)
-        .contentType(MediaType.APPLICATION_JSON);
+            .post("/api/v2/auth/login")
+            .content(body)
+            .contentType(MediaType.APPLICATION_JSON);
     MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
     String token = mvcResult.getResponse().getHeader(HttpHeaders.AUTHORIZATION);
     tokenRequest = token;
+  }
+
+  @Test
+  public void ajouterPerson_() throws Exception {
+    Personne personne = new Personne("tonux", "samb", 40);
+    HttpHeaders headers = new HttpHeaders();
+    headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + tokenRequest);
+    HttpEntity<Personne> entity = new HttpEntity<Personne>(null, headers);
+    ResponseEntity<Personne> responseEntity = restTemplate
+            .exchange("http://localhost:" + port + "/ajouterPersonne", HttpMethod.POST, entity, Personne.class, personne);
+    assertNotNull(responseEntity);
+  }
+  @Test
+  public void registration_() throws Exception {
+    Utilisateur personne = new Utilisateur("bayeserigneseck@gmail.com", "passer123","baye serigne", Set.of(new Role(Role.READ)));
+    HttpHeaders headers = new HttpHeaders();
+    headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + tokenRequest);
+    HttpEntity<Personne> entity = new HttpEntity<Personne>(null, headers);
+    ResponseEntity<Personne> responseEntity = restTemplate
+            .exchange( "http://localhost:" + port + "/api/v2/auth/registration", HttpMethod.POST, entity, Personne.class, personne);
+    assertNotNull(responseEntity);
+  }
+
+
+  @Test
+  @WithMockUser(username = "clara@formation.ca", password = "Passer@123", authorities = {"ADMIN"})
+  public void samaTest() throws Exception {
+    RequestBuilder requestBuilder = MockMvcRequestBuilders
+            .get("/api/v2/personnes/bye")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer token")
+            .contentType(MediaType.APPLICATION_JSON);
+    MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+    MockHttpServletResponse response = mvcResult.getResponse();
+    assertEquals(HttpStatus.OK.value(), response.getStatus());
+  }
+  @Test
+  @WithMockUser(username = "clara@formation.ca", password = "Passer@123", authorities = {"READ"})
+  public void samaTestBye() throws Exception {
+    RequestBuilder requestBuilder = MockMvcRequestBuilders
+            .get("/api/v2/personnes/hello")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer token")
+            .contentType(MediaType.APPLICATION_JSON);
+    MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+    MockHttpServletResponse response = mvcResult.getResponse();
+    assertEquals(HttpStatus.OK.value(), response.getStatus());
+  }
+  @Test
+  @WithMockUser(username = "clara@formation.ca", password = "Passer@123", authorities = {"ADMIN"})
+  public void deletePersonne() throws Exception {
+    RequestBuilder requestBuilder = MockMvcRequestBuilders
+            .delete("/api/v2/personnes/2")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenRequest)
+            .contentType(MediaType.APPLICATION_JSON);
+
+    MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+    String contentAsString = mvcResult.getResponse().getContentAsString();
+
+    System.out.println(contentAsString);
+    assertNotNull(contentAsString);
+
+  }
+  @Test
+  @WithMockUser(username = "michel@formation.sn", password = "Passer@123", authorities = {"READ"})
+  public void getPersonneParNom() throws Exception {
+    RequestBuilder requestBuilder = MockMvcRequestBuilders
+            .get("/api/v2/personnes/search?nom=Abdel")
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenRequest)
+            .contentType(MediaType.APPLICATION_JSON);
+
+    MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+    String contentAsString = mvcResult.getResponse().getContentAsString();
+
+    System.out.println(contentAsString);
+    assertNotNull(contentAsString);
+
+  }
+  @Test
+  @WithMockUser(username = "clara@formation.ca", password = "Passer@123", authorities = {"ADMIN"})
+  public void modifPersonne() throws Exception {
+    int id=2;
+    RequestBuilder requestBuilder = MockMvcRequestBuilders
+            .patch("/api/v2/personnnes/" + id)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenRequest)
+            .contentType(MediaType.APPLICATION_JSON);
+
+    MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+    String contentAsString = mvcResult.getResponse().getContentAsString();
+
+    System.out.println(contentAsString);
+    assertNotNull(contentAsString);
+
   }
 
 }
