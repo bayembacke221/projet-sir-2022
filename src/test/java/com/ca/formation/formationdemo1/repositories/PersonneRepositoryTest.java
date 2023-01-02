@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
-public class PersonneRepositorytest {
+public class PersonneRepositoryTest {
 
   @Autowired
   PersonneRepository personneRepository;
@@ -27,7 +27,7 @@ public class PersonneRepositorytest {
   public void ajouterPersonne() {
     Personne personne = personneRepository.save(new Personne("tonux", "samb", 50));
     assertNotNull(personne);
-    assertEquals(personne.getNom(), "tonux");
+    assertEquals("tonux",personne.getNom() );
   }
 
   @Test
@@ -64,7 +64,7 @@ public class PersonneRepositorytest {
 
     List<Personne> personList = (List<Personne>) personneRepository.findAll();
 
-    org.assertj.core.api.Assertions.assertThat(personList.size()).isGreaterThan(0);
+    org.assertj.core.api.Assertions.assertThat(personList.size()).isPositive();
   }
   @Test
   public void deletePerson(){

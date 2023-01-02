@@ -1,5 +1,6 @@
-package com.ca.formation.formationdemo1.config.jwtConfig;
+package com.ca.formation.formationdemo1.config.jwtConfig.JwtFilter;
 
+import com.ca.formation.formationdemo1.config.jwtConfig.JwtUtil.JwtUtil;
 import com.ca.formation.formationdemo1.repositories.UtilisateurRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -25,7 +25,6 @@ public class PersonneController {
 
     @GetMapping("/nouveau")
     public String nouveauPersonne(PersonneDTO personne){
-        Personne p = new Personne(personne.getNom(),personne.getPrenom(),personne.getAge());
         return "nouveau";
     }
 

@@ -1,7 +1,7 @@
 package com.ca.formation.formationdemo1.controllers.api;
 
 
-import com.ca.formation.formationdemo1.config.jwtConfig.JwtUtil;
+import com.ca.formation.formationdemo1.config.jwtConfig.JwtUtil.JwtUtil;
 import com.ca.formation.formationdemo1.models.Utilisateur;
 import com.ca.formation.formationdemo1.models.UtilisateurDTO;
 import com.ca.formation.formationdemo1.services.UtilisateurService;
@@ -45,8 +45,7 @@ public class UtilisateurController {
 
     @PostMapping("/registration")
     public ResponseEntity<Utilisateur> registration(@RequestBody UtilisateurDTO utilisateurRequest){
-        Utilisateur u = new Utilisateur(utilisateurRequest.getUsername(),utilisateurRequest.getPassword()
-                ,utilisateurRequest.getName(),utilisateurRequest.getAuthoritie());
+
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

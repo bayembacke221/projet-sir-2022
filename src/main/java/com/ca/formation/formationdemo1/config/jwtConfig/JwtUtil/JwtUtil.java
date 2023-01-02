@@ -1,14 +1,13 @@
-package com.ca.formation.formationdemo1.config.jwtConfig;
-
+package com.ca.formation.formationdemo1.config.jwtConfig.JwtUtil;
 
 import com.ca.formation.formationdemo1.models.Utilisateur;
 import io.jsonwebtoken.*;
-import org.springframework.security.core.GrantedAuthority;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
-import java.util.stream.Collectors;
 
 @Component
 public class JwtUtil {
@@ -17,12 +16,14 @@ public class JwtUtil {
     @Value("${bayembacke.app.jwtSecret}")
     private  String jwtSecret;
 
+    Logger logger = LoggerFactory.getLogger(JwtUtil.class);
+
+
     // generer JWT
 
     public String generateAccesToken(Utilisateur utilisateur){
         Claims claims = Jwts.claims().setSubject(utilisateur.getUsername());
-        claims.put("scopes", utilisateur.getAuthorities().stream().map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList()));
+        claims.put("scopes", utilisateur.getAuthorities().stream().toList());
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(utilisateur.getName()+","+utilisateur.getUsername())
@@ -71,15 +72,15 @@ public class JwtUtil {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
             return true;
         } catch (SignatureException ex){
-            System.err.println("Invalide Signature Jwt - "+ex.getMessage());
+            logger.info("Invalide Signature Jwt - {}",ex.getMessage());
         } catch (ExpiredJwtException ex){
-            System.err.println("Expiration du Jwt - "+ex.getMessage());
+            logger.info("Expiration du Jwt - {}",ex.getMessage());
         }catch (UnsupportedJwtException ex){
-            System.err.println("Token jwt non supporté - "+ex.getMessage());
+            logger.info("Token jwt non supporté - {}",ex.getMessage());
         }catch (IllegalArgumentException ex){
-            System.err.println("Invalide claims Jwt - "+ex.getMessage());
+            logger.info("Invalide claims Jwt - {}",ex.getMessage());
         }catch (MalformedJwtException ex){
-            System.err.println("Token jwt mal formatter - "+ex.getMessage());
+            logger.info("Token jwt mal formatter - {}",ex.getMessage());
         }
 
         return false;

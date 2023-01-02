@@ -1,7 +1,9 @@
 package com.ca.formation.formationdemo1.config;
 
-import com.ca.formation.formationdemo1.config.jwtConfig.JwtFilter;
+import com.ca.formation.formationdemo1.config.jwtConfig.JwtFilter.JwtFilter;
 import com.ca.formation.formationdemo1.repositories.UtilisateurRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -38,8 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private String apiDocPath;
     @Value("${springdoc.swagger-ui.path}")
     private String swaggerPath;
-    @Value("${security.enable-csrf}")
-    private boolean csrfEnabled;
+    Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
+
 
     public SecurityConfig(UtilisateurRepository utilisateurRepository, JwtFilter jwtFilter) {
 
@@ -65,7 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         // activer les cors et desactiver les CSRF
-        http = http.cors().and().csrf().disable();
+        http = http.cors().and();
 
         // Mettre la getion de la session a un sans etat
         http = http
@@ -75,7 +77,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // mettre pas autoriser si on a une exception
         http = http.exceptionHandling().authenticationEntryPoint(((request, response, authException) -> {
-            System.err.println("Demande pas autoriser - "+authException.getMessage());
+            logger.info("Demande pas autoriser - {}",authException.getMessage());
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());})).and();
 
         // mettre les permissions sur nos resources

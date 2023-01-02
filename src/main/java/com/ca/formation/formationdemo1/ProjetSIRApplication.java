@@ -2,6 +2,8 @@ package com.ca.formation.formationdemo1;
 
 import com.ca.formation.formationdemo1.models.Personne;
 import com.ca.formation.formationdemo1.repositories.PersonneRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -24,6 +26,7 @@ public class ProjetSIRApplication {
 
   @Autowired
   private Environment env;
+  Logger logger = LoggerFactory.getLogger(ProjetSIRApplication.class);
 
   public static void main(String[] args) {
     SpringApplication.run(ProjetSIRApplication.class, args);
@@ -31,8 +34,8 @@ public class ProjetSIRApplication {
 
   @Bean
   public void addBean() {
-    System.err.println(monApplication);
-    System.err.println(" Démarrage application Spring Boot");
+    logger.info(monApplication);
+    logger.info(" Démarrage application Spring Boot");
   }
 
   @Bean
